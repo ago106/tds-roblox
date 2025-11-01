@@ -1,187 +1,184 @@
-local CoreGui = game:GetService("CoreGui");
-local TweenService = game:GetService("TweenService");
-local Lighting = game:GetService("Lighting");
-local Players = game:GetService("Players");
-local UserInputService = game:GetService("UserInputService");
-local RunService = game:GetService("RunService");
+local CoreGui = game:GetService("CoreGui")
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 
-local player = Players.LocalPlayer;
-local playerGui = player:WaitForChild("PlayerGui");
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
 
-local protect_gui = protect_gui or (syn and syn.protect_gui) or function(gui)
-	if gethui then 
-		gui.Parent = gethui();
-	else 
-		gui.Parent = CoreGui;
-	end;
-end;
+local function protect_gui(gui)
+    gui.Parent = CoreGui
+end
 
 local function RandomString(len)
-	local s, c = "", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-	for i = 1, len or 12 do
-		local r = math.random(1, #c);
-		s = s .. c:sub(r, r);
-	end;
-	return s;
-end;
+    local s = ""
+    local chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    for i = 1, len or 12 do
+        local r = math.random(1, #chars)
+        s = s .. chars:sub(r, r)
+    end
+    return s
+end
 
-local _G = _G or getfenv();
-local _E = _E or {};
-_E.RS = RandomString;
+local _G = _G or getfenv()
+local _E = _E or {}
+_E.RS = RandomString
 
-local consoleGUI = Instance.new("ScreenGui");
-consoleGUI.Name = _E.RS(10);
-consoleGUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling;
-protect_gui(consoleGUI);
+local consoleGUI = Instance.new("ScreenGui")
+consoleGUI.Name = "ConsoleGUI_" .. _E.RS(8)
+consoleGUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+protect_gui(consoleGUI)
 
-local mainFrame = Instance.new("Frame");
-mainFrame.Name = _E.RS(8);
-mainFrame.Size = UDim2.new(0, 600, 0, 450);
-mainFrame.AnchorPoint = Vector2.new(0.5, 0.5);
-mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0);
-mainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25);
-mainFrame.BorderSizePixel = 0;
-mainFrame.ClipsDescendants = true;
-mainFrame.Parent = consoleGUI;
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame_" .. _E.RS(8)
+mainFrame.Size = UDim2.new(0, 600, 0, 450)
+mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+mainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+mainFrame.BorderSizePixel = 0
+mainFrame.ClipsDescendants = true
+mainFrame.Parent = consoleGUI
 
-local UICorner1 = Instance.new("UICorner");
-UICorner1.CornerRadius = UDim.new(0, 8);
-UICorner1.Parent = mainFrame;
+local UICorner1 = Instance.new("UICorner")
+UICorner1.CornerRadius = UDim.new(0, 8)
+UICorner1.Parent = mainFrame
 
-local titleBar = Instance.new("Frame");
-titleBar.Name = _E.RS(7);
-titleBar.Size = UDim2.new(1, 0, 0.07, 0);
-titleBar.BackgroundColor3 = Color3.fromRGB(40, 40, 40);
-titleBar.BorderSizePixel = 0;
-titleBar.Parent = mainFrame;
+local titleBar = Instance.new("Frame")
+titleBar.Name = "TitleBar_" .. _E.RS(7)
+titleBar.Size = UDim2.new(1, 0, 0.07, 0)
+titleBar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+titleBar.BorderSizePixel = 0
+titleBar.Parent = mainFrame
 
-local UICorner2 = Instance.new("UICorner");
-UICorner2.CornerRadius = UDim.new(0, 8);
-UICorner2.Parent = titleBar;
+local UICorner2 = Instance.new("UICorner")
+UICorner2.CornerRadius = UDim.new(0, 8)
+UICorner2.Parent = titleBar
 
-local titleLabel = Instance.new("TextLabel");
-titleLabel.Name = _E.RS(6);
-titleLabel.Size = UDim2.new(0.7, 0, 1, 0);
-titleLabel.Position = UDim2.new(0.05, 0, 0, 0);
-titleLabel.BackgroundTransparency = 1;
-titleLabel.Text = (getgenv and getgenv().Tittle) or "";
-titleLabel.TextColor3 = Color3.fromRGB(220, 220, 220);
-titleLabel.TextScaled = true;
-titleLabel.Font = Enum.Font.GothamBold;
-titleLabel.Parent = titleBar;
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Name = "TitleLabel_" .. _E.RS(6)
+titleLabel.Size = UDim2.new(0.7, 0, 1, 0)
+titleLabel.Position = UDim2.new(0.05, 0, 0, 0)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "Roblox Console"
+titleLabel.TextColor3 = Color3.fromRGB(220, 220, 220)
+titleLabel.TextScaled = true
+titleLabel.Font = Enum.Font.GothamBold
+titleLabel.Parent = titleBar
 
-local runtimeLabel = Instance.new("TextLabel");
-runtimeLabel.Name = _E.RS(6);
-runtimeLabel.Size = UDim2.new(0.1, 0, 1, 0);
-runtimeLabel.Position = UDim2.new(0.75, 0, 0, 0);
-runtimeLabel.BackgroundTransparency = 1;
-runtimeLabel.Text = "00:00";
-runtimeLabel.TextColor3 = Color3.fromRGB(220, 220, 220);
-runtimeLabel.TextScaled = true;
-runtimeLabel.Font = Enum.Font.Gotham;
-runtimeLabel.TextXAlignment = Enum.TextXAlignment.Right;
-runtimeLabel.Parent = titleBar;
+local runtimeLabel = Instance.new("TextLabel")
+runtimeLabel.Name = "RuntimeLabel_" .. _E.RS(6)
+runtimeLabel.Size = UDim2.new(0.1, 0, 1, 0)
+runtimeLabel.Position = UDim2.new(0.75, 0, 0, 0)
+runtimeLabel.BackgroundTransparency = 1
+runtimeLabel.Text = "00:00"
+runtimeLabel.TextColor3 = Color3.fromRGB(220, 220, 220)
+runtimeLabel.TextScaled = true
+runtimeLabel.Font = Enum.Font.Gotham
+runtimeLabel.TextXAlignment = Enum.TextXAlignment.Right
+runtimeLabel.Parent = titleBar
 
-local minimizeButton = Instance.new("TextButton");
-minimizeButton.Name = _E.RS(9);
-minimizeButton.Size = UDim2.new(0.06, 0, 0.6, 0);
-minimizeButton.Position = UDim2.new(0.85, 0, 0.2, 0);
-minimizeButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60);
-minimizeButton.Text = "_";
-minimizeButton.TextColor3 = Color3.fromRGB(220, 220, 220);
-minimizeButton.TextScaled = true;
-minimizeButton.Font = Enum.Font.GothamBold;
-minimizeButton.Parent = titleBar;
+local minimizeButton = Instance.new("TextButton")
+minimizeButton.Name = "MinimizeBtn_" .. _E.RS(9)
+minimizeButton.Size = UDim2.new(0.06, 0, 0.6, 0)
+minimizeButton.Position = UDim2.new(0.85, 0, 0.2, 0)
+minimizeButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+minimizeButton.Text = "_"
+minimizeButton.TextColor3 = Color3.fromRGB(220, 220, 220)
+minimizeButton.TextScaled = true
+minimizeButton.Font = Enum.Font.GothamBold
+minimizeButton.Parent = titleBar
 
-local closeButton = Instance.new("TextButton");
-closeButton.Name = _E.RS(9);
-closeButton.Size = UDim2.new(0.06, 0, 0.6, 0);
-closeButton.Position = UDim2.new(0.92, 0, 0.2, 0);
-closeButton.BackgroundColor3 = Color3.fromRGB(200, 60, 60);
-closeButton.Text = "X";
-closeButton.TextColor3 = Color3.fromRGB(220, 220, 220);
-closeButton.TextScaled = true;
-closeButton.Parent = titleBar;
 
-local UICorner3 = Instance.new("UICorner");
-UICorner3.CornerRadius = UDim.new(0, 4);
-UICorner3.Parent = minimizeButton;
+local closeButton = Instance.new("TextButton")
+closeButton.Name = "CloseBtn_" .. _E.RS(9)
+closeButton.Size = UDim2.new(0.06, 0, 0.6, 0)
+closeButton.Position = UDim2.new(0.92, 0, 0.2, 0)
+closeButton.BackgroundColor3 = Color3.fromRGB(200, 60, 60)
+closeButton.Text = "X"
+closeButton.TextColor3 = Color3.fromRGB(220, 220, 220)
+closeButton.TextScaled = true
+closeButton.Parent = titleBar
 
-local UICorner4 = Instance.new("UICorner");
-UICorner4.CornerRadius = UDim.new(0, 4);
-UICorner4.Parent = closeButton;
 
-local outputFrame = Instance.new("ScrollingFrame");
-outputFrame.Name = _E.RS(11);
-outputFrame.Size = UDim2.new(1, -10, 0.86, -5);
-outputFrame.Position = UDim2.new(0, 5, 0.07, 0);
-outputFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20);
-outputFrame.BorderSizePixel = 0;
-outputFrame.ScrollBarThickness = 8;
-outputFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y;
-outputFrame.CanvasSize = UDim2.new(0, 0, 0, 0);
-outputFrame.ScrollingDirection = Enum.ScrollingDirection.Y;
-outputFrame.VerticalScrollBarInset = Enum.ScrollBarInset.Always;
-outputFrame.Parent = mainFrame;
+local UICorner3 = Instance.new("UICorner")
+UICorner3.CornerRadius = UDim.new(0, 4)
+UICorner3.Parent = minimizeButton
 
-local UICorner5 = Instance.new("UICorner");
-UICorner5.CornerRadius = UDim.new(0, 6);
-UICorner5.Parent = outputFrame;
+local UICorner4 = Instance.new("UICorner")
+UICorner4.CornerRadius = UDim.new(0, 4)
+UICorner4.Parent = closeButton
 
-local outputLayout = Instance.new("UIListLayout");
-outputLayout.Name = _E.RS(12);
-outputLayout.Padding = UDim.new(0, 3);
-outputLayout.SortOrder = Enum.SortOrder.LayoutOrder;
-outputLayout.Parent = outputFrame;
+local outputFrame = Instance.new("ScrollingFrame")
+outputFrame.Name = "OutputFrame_" .. _E.RS(11)
+outputFrame.Size = UDim2.new(1, -10, 0.86, -5)
+outputFrame.Position = UDim2.new(0, 5, 0.07, 0)
+outputFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+outputFrame.BorderSizePixel = 0
+outputFrame.ScrollBarThickness = 8
+outputFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+outputFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+outputFrame.ScrollingDirection = Enum.ScrollingDirection.Y
+outputFrame.VerticalScrollBarInset = Enum.ScrollBarInset.Always
+outputFrame.Parent = mainFrame
 
-local outputPadding = Instance.new("UIPadding");
-outputPadding.Name = _E.RS(13);
-outputPadding.PaddingTop = UDim.new(0, 0);
-outputPadding.PaddingLeft = UDim.new(0, 6);
-outputPadding.PaddingRight = UDim.new(0, 6);
-outputPadding.PaddingBottom = UDim.new(0, 6);
-outputPadding.Parent = outputFrame;
+local UICorner5 = Instance.new("UICorner")
+UICorner5.CornerRadius = UDim.new(0, 6)
+UICorner5.Parent = outputFrame
 
-local clearButton = Instance.new("TextButton");
-clearButton.Name = _E.RS(14);
-clearButton.Size = UDim2.new(0.12, 0, 0.06, 0);
-clearButton.Position = UDim2.new(0.02, 0, 0.92, 0);
-clearButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60);
-clearButton.Text = "Clear";
-clearButton.TextColor3 = Color3.fromRGB(220, 220, 220);
-clearButton.TextSize = 14;
-clearButton.Font = Enum.Font.GothamBold;
-clearButton.Parent = mainFrame;
+local outputLayout = Instance.new("UIListLayout")
+outputLayout.Name = "OutputLayout_" .. _E.RS(12)
+outputLayout.Padding = UDim.new(0, 3)
+outputLayout.SortOrder = Enum.SortOrder.LayoutOrder
+outputLayout.Parent = outputFrame
 
-local UICorner6 = Instance.new("UICorner");
-UICorner6.CornerRadius = UDim.new(0, 4);
-UICorner6.Parent = clearButton;
+local outputPadding = Instance.new("UIPadding")
+outputPadding.Name = "OutputPadding_" .. _E.RS(13)
+outputPadding.PaddingTop = UDim.new(0, 5)
+outputPadding.PaddingLeft = UDim.new(0, 8)
+outputPadding.PaddingRight = UDim.new(0, 8)
+outputPadding.PaddingBottom = UDim.new(0, 8)
+outputPadding.Parent = outputFrame
 
-local resizeHandle = Instance.new("Frame");
-resizeHandle.Name = _E.RS(15);
-resizeHandle.Size = UDim2.new(0, 16, 0, 16);
-resizeHandle.Position = UDim2.new(1, -16, 1, -16);
-resizeHandle.BackgroundColor3 = Color3.fromRGB(80, 80, 80);
-resizeHandle.BorderSizePixel = 1;
-resizeHandle.BorderColor3 = Color3.fromRGB(120, 120, 120);
-resizeHandle.ZIndex = 2;
-resizeHandle.Parent = mainFrame;
+local clearButton = Instance.new("TextButton")
+clearButton.Name = "ClearBtn_" .. _E.RS(14)
+clearButton.Size = UDim2.new(0.12, 0, 0.06, 0)
+clearButton.Position = UDim2.new(0.02, 0, 0.92, 0)
+clearButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+clearButton.Text = "Clear"
+clearButton.TextColor3 = Color3.fromRGB(220, 220, 220)
+clearButton.TextSize = 14
+clearButton.Font = Enum.Font.GothamBold
+clearButton.Parent = mainFrame
 
-local resizeCorner = Instance.new("UICorner");
-resizeCorner.CornerRadius = UDim.new(0, 3);
-resizeCorner.Parent = resizeHandle;
+local UICorner6 = Instance.new("UICorner")
+UICorner6.CornerRadius = UDim.new(0, 4)
+UICorner6.Parent = clearButton
+
+local resizeHandle = Instance.new("Frame")
+resizeHandle.Name = "ResizeHandle_" .. _E.RS(15)
+resizeHandle.Size = UDim2.new(0, 16, 0, 16)
+resizeHandle.Position = UDim2.new(1, -16, 1, -16)
+resizeHandle.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+resizeHandle.BorderSizePixel = 1
+resizeHandle.BorderColor3 = Color3.fromRGB(120, 120, 120)
+resizeHandle.ZIndex = 2
+resizeHandle.Parent = mainFrame
+
+local resizeCorner = Instance.new("UICorner")
+resizeCorner.CornerRadius = UDim.new(0, 3)
+resizeCorner.Parent = resizeHandle
 
 local function getMessageType(messageType)
     local types = {
-        info = "[info]",
-        warning = "[warn]",
-        error = "[error]",
-        success = "[success]",
-        debug = "[debug]",
-        system = "[system]"
-    };
-    return types[messageType] or "[info]";
-end;
+        info = "[INFO]",
+        warning = "[WARN]",
+        error = "[ERROR]",
+        success = "[SUCCESS]",
+        debug = "[DEBUG]",
+        system = "[SYSTEM]"
+    }
+    return types[messageType] or "[INFO]"
+end
 
 local function getMessageColor(messageType)
     local colors = {
@@ -191,145 +188,154 @@ local function getMessageColor(messageType)
         success = Color3.fromRGB(60, 255, 60),
         debug = Color3.fromRGB(100, 150, 255),
         system = Color3.fromRGB(150, 100, 255)
-    };
-    return colors[messageType] or colors.info;
-end;
+    }
+    return colors[messageType] or colors.info
+end
 
 function _E.printToConsole(text, messageType)
-    messageType = messageType or "info";
-    RunService.Heartbeat:Wait();
+    messageType = messageType or "info"
     
-    local messageLabel = Instance.new("TextLabel");
-    messageLabel.Name = _E.RS(6);
-    messageLabel.Size = UDim2.new(1, -12, 0, 0);
-    messageLabel.AutomaticSize = Enum.AutomaticSize.Y;
-    messageLabel.BackgroundTransparency = 1;
-    messageLabel.Text = "[" .. os.date("%H:%M:%S") .. "] " .. getMessageType(messageType) .. " - " .. tostring(text);
-    messageLabel.TextColor3 = getMessageColor(messageType);
-    messageLabel.TextSize = 14;
-    messageLabel.TextXAlignment = Enum.TextXAlignment.Left;
-    messageLabel.TextYAlignment = Enum.TextYAlignment.Top;
-    messageLabel.TextWrapped = true;
-    messageLabel.Font = Enum.Font.Gotham;
-    messageLabel.Parent = outputFrame;
+    RunService.Heartbeat:Wait()
     
-    wait(0.05);
-    outputFrame.CanvasPosition = Vector2.new(0, outputFrame.AbsoluteCanvasSize.Y);
-end;
+    local messageLabel = Instance.new("TextLabel")
+    messageLabel.Name = "Message_" .. _E.RS(8)
+    messageLabel.Size = UDim2.new(1, -16, 0, 0)
+    messageLabel.AutomaticSize = Enum.AutomaticSize.Y
+    messageLabel.BackgroundTransparency = 1
+    messageLabel.Text = "[" .. os.date("%H:%M:%S") .. "] " .. getMessageType(messageType) .. " " .. tostring(text)
+    messageLabel.TextColor3 = getMessageColor(messageType)
+    messageLabel.TextSize = 14
+    messageLabel.TextXAlignment = Enum.TextXAlignment.Left
+    messageLabel.TextYAlignment = Enum.TextYAlignment.Top
+    messageLabel.TextWrapped = true
+    messageLabel.Font = Enum.Font.Gotham
+    messageLabel.LayoutOrder = #outputFrame:GetChildren()
+    messageLabel.Parent = outputFrame
+    task.wait(0.05)
+    outputFrame.CanvasPosition = Vector2.new(0, outputFrame.AbsoluteCanvasSize.Y)
+end
 
 function _E.clearConsole()
     for _, child in ipairs(outputFrame:GetChildren()) do
         if child:IsA("TextLabel") then
-            child:Destroy();
-        end;
-    end;
-    _E.printToConsole("Console cleared", "system");
-end;
+            child:Destroy()
+        end
+    end
+    _E.printToConsole("Console cleared", "system")
+end
 
-local dragging = false;
-local dragInput;
-local dragStart;
-local startPos;
+local dragging = false
+local dragInput
+local dragStart
+local startPos
 
-local resizing = false;
-local resizeInput;
-local resizeStart;
-local resizeStartSize;
+local resizing = false
+local resizeInput
+local resizeStart
+local resizeStartSize
 
 local function updateInput(input)
     if dragging then
-        local delta = input.Position - dragStart;
+        local delta = input.Position - dragStart
         mainFrame.Position = UDim2.new(
             startPos.X.Scale, 
             startPos.X.Offset + delta.X,
             startPos.Y.Scale, 
             startPos.Y.Offset + delta.Y
-        );
-    end;
-end;
+        )
+    end
+end
 
 local function updateResize(input)
     if resizing then
-        local delta = input.Position - resizeStart;
-        local newWidth = math.max(400, resizeStartSize.X.Offset + delta.X);
-        local newHeight = math.max(300, resizeStartSize.Y.Offset + delta.Y);
+        local delta = input.Position - resizeStart
+        local newWidth = math.max(400, resizeStartSize.X.Offset + delta.X)
+        local newHeight = math.max(300, resizeStartSize.Y.Offset + delta.Y)
         
-        mainFrame.Size = UDim2.new(0, newWidth, 0, newHeight);
-    end;
-end;
+        mainFrame.Size = UDim2.new(0, newWidth, 0, newHeight)
+    end
+end
 
 titleBar.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true;
-        dragStart = input.Position;
-        startPos = mainFrame.Position;
+        dragging = true
+        dragStart = input.Position
+        startPos = mainFrame.Position
+        
         input.Changed:Connect(function()
             if input.UserInputState == Enum.UserInputState.End then
-                dragging = false;
-            end;
-        end);
-    end;
-end);
+                dragging = false
+            end
+        end)
+    end
+end)
 
 resizeHandle.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        resizing = true;
-        resizeStart = input.Position;
-        resizeStartSize = mainFrame.Size;
+        resizing = true
+        resizeStart = input.Position
+        resizeStartSize = mainFrame.Size
+        
         input.Changed:Connect(function()
             if input.UserInputState == Enum.UserInputState.End then
-                resizing = false;
-            end;
-        end);
-    end;
-end);
+                resizing = false
+            end
+        end)
+    end
+end)
 
 titleBar.InputChanged:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseMovement then
-        dragInput = input;
-    end;
-end);
+        dragInput = input
+    end
+end)
 
 resizeHandle.InputChanged:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseMovement then
-        resizeInput = input;
-    end;
-end);
+        resizeInput = input
+    end
+end)
 
 UserInputService.InputChanged:Connect(function(input)
     if dragging and input == dragInput then
-        updateInput(input);
+        updateInput(input)
     elseif resizing and input == resizeInput then
-        updateResize(input);
-    end;
-end);
+        updateResize(input)
+    end
+end)
+
 
 minimizeButton.MouseButton1Click:Connect(function()
-    consoleGUI.Enabled = not consoleGUI.Enabled;
-end);
+    consoleGUI.Enabled = not consoleGUI.Enabled
+end)
 
 closeButton.MouseButton1Click:Connect(function()
-    consoleGUI:Destroy();
-end);
+    consoleGUI:Destroy()
+    _G.print = nil
+    _G.clearConsole = nil
+    _G.consoleToggle = nil
+end)
 
 clearButton.MouseButton1Click:Connect(function()
-    _E.clearConsole();
-end);
+    _E.clearConsole()
+end)
 
-_G.print = _E.printToConsole;
-_G.clearConsole = _E.clearConsole;
+
+_G.print = _E.printToConsole
+_G.clearConsole = _E.clearConsole
 _G.consoleToggle = function()
-    consoleGUI.Enabled = not consoleGUI.Enabled;
-end;
+    consoleGUI.Enabled = not consoleGUI.Enabled
+end
 
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if gameProcessed then return end;
-    if input.KeyCode == Enum.KeyCode.LeftControl then
-        consoleGUI.Enabled = not consoleGUI.Enabled;
-    end;
-end);
+    if gameProcessed then return end
+    if input.KeyCode == Enum.KeyCode.F8 then
+        consoleGUI.Enabled = not consoleGUI.Enabled
+    end
+end)
 
-local startTime = os.time();
+
+local startTime = os.time()
 
 local function formatTime(seconds)
     local hours = math.floor(seconds / 3600)
@@ -341,27 +347,25 @@ local function formatTime(seconds)
     elseif minutes > 0 then
         return string.format("%d:%02d", minutes, secs)
     else
-        return string.format("%d", secs)
+        return string.format("%02d", secs)
     end
-end;
+end
 
 task.spawn(function()
-    while true do
-        local elapsed = os.time() - startTime;
-        runtimeLabel.Text = formatTime(elapsed);
-        wait(1);
-    end;
-end);
+    while consoleGUI.Parent do
+        local elapsed = os.time() - startTime
+        runtimeLabel.Text = formatTime(elapsed)
+        task.wait(1)
+    end
+end)
 
---[[
-_G.print("Hello World!");
+task.delay(1, function()
+    _E.printToConsole("Console initialized successfully!", "success")
+    _E.printToConsole("Press F8 to hide/show console", "system")
+end)
 
-_G.print("This is a warning", "warning");
-_G.print("Operation failed", "error");
-_G.print("Task completed", "success");
-_G.print("Debug information", "debug");
-_G.print("System message", "system");
+if not consoleGUI.Parent then
+    consoleGUI.Parent = CoreGui
+end
 
-_G.clearConsole();
-_G.consoleToggle();
-]]
+return _E
