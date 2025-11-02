@@ -149,7 +149,7 @@ bottomFrame.Parent = mainFrame;
 
 local clearButton = Instance.new("TextButton");
 clearButton.Name = "ClearBtn_" .. _E.RS(14);
-clearButton.Size = UDim2.new(0.12, 0, 1, 0);
+clearButton.Size = UDim2.new(0.15, 0, 1, 0);
 clearButton.Position = UDim2.new(0.02, 0, 0, 0);
 clearButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60);
 clearButton.Text = "Clear";
@@ -164,12 +164,12 @@ UICorner6.Parent = clearButton;
 
 local testButton = Instance.new("TextButton");
 testButton.Name = "TestBtn_" .. _E.RS(14);
-testButton.Size = UDim2.new(0.12, 0, 1, 0);
-testButton.Position = UDim2.new(0.16, 0, 0, 0);
+testButton.Size = UDim2.new(0.15, 0, 1, 0);
+testButton.Position = UDim2.new(0.19, 0, 0, 0);
 testButton.BackgroundColor3 = Color3.fromRGB(60, 100, 60);
-testButton.Text = "Test Webhook";
+testButton.Text = "Test WH";
 testButton.TextColor3 = Color3.fromRGB(220, 220, 220);
-testButton.TextSize = 14;
+testButton.TextSize = 12;
 testButton.Font = Enum.Font.GothamBold;
 testButton.Parent = bottomFrame;
 
@@ -180,12 +180,12 @@ UICorner7.Parent = testButton;
 local webhookBox = Instance.new("TextBox");
 webhookBox.Name = "WebhookBox_" .. _E.RS(15);
 webhookBox.Size = UDim2.new(0.6, 0, 1, 0);
-webhookBox.Position = UDim2.new(0.3, 0, 0, 0);
+webhookBox.Position = UDim2.new(0.36, 0, 0, 0);
 webhookBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40);
 webhookBox.TextColor3 = Color3.fromRGB(220, 220, 220);
 webhookBox.TextSize = 14;
 webhookBox.Font = Enum.Font.Gotham;
-webhookBox.PlaceholderText = "Webhook URL";
+webhookBox.PlaceholderText = "Put Webhook URL here";
 webhookBox.Text = getgenv().Webhook;
 webhookBox.PlaceholderColor3 = Color3.fromRGB(150, 150, 150);
 webhookBox.ClearTextOnFocus = false;
@@ -272,36 +272,87 @@ function _E.testWebhook()
         return false;
     end;
     
+    testButton.Text = "Sending...";
+    testButton.BackgroundColor3 = Color3.fromRGB(100, 100, 60);
+    
     local success, result = pcall(function()
+        local OSTime = os.time();
+        local Time = os.date('!*t', OSTime);
+        
         local data = {
-            ["content"] = "Webhook Test - Console is working!",
-            ["username"] = "Roblox Console",
-            ["embeds"] = {{
-                ["title"] = "Test Message",
-                ["description"] = "This is a test message from Roblox Console",
-                ["color"] = 65280,
-                ["timestamp"] = DateTime.now():ToIsoDate()
+            content = "Webhook Test - Console is working!",
+            username = "Roblox Console",
+            embeds = {{
+                title = "Test Message",
+                description = "This is a test message from Roblox Console",
+                color = 65280,
+                fields = {
+                    {
+                        name = "Status",
+                        value = "✅ Working",
+                        inline = true
+                    },
+                    {
+                        name = "Time",
+                        value = os.date("%H:%M:%S"),
+                        inline = true
+                    },
+                    {
+                        name = "Game",
+                        value = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name or "Unknown",
+                        inline = true
+                    }
+                },
+                footer = {
+                    text = "Test completed successfully"
+                },
+                timestamp = string.format('%d-%d-%dT%02d:%02d:%02dZ', Time.year, Time.month, Time.day, Time.hour, Time.min, Time.sec)
             }}
         };
         
         local jsonData = HttpService:JSONEncode(data);
-        local response = syn.request({
-            Url = webhook,
-            Method = "POST",
-            Headers = {
-                ["Content-Type"] = "application/json"
-            },
-            Body = jsonData
-        });
+        local request = (syn and syn.request) or (http_request) or request;
         
-        return response;
+        if request then
+            local response = request({
+                Url = webhook,
+                Method = "POST",
+                Headers = {
+                    ["Content-Type"] = "application/json"
+                },
+                Body = jsonData
+            });
+            return response;
+        else
+            error("No HTTP request function available");
+        end;
     end);
     
     if success then
+        testButton.Text = "Success!";
+        testButton.BackgroundColor3 = Color3.fromRGB(60, 150, 60);
         _E.printToConsole("Webhook test sent successfully!", "success");
+        
+        task.delay(2, function()
+            if testButton then
+                testButton.Text = "Test WH";
+                testButton.BackgroundColor3 = Color3.fromRGB(60, 100, 60);
+            end;
+        end);
+        
         return true;
     else
+        testButton.Text = "Failed!";
+        testButton.BackgroundColor3 = Color3.fromRGB(150, 60, 60);
         _E.printToConsole("Webhook test failed: " .. tostring(result), "error");
+        
+        task.delay(2, function()
+            if testButton then
+                testButton.Text = "Test WH";
+                testButton.BackgroundColor3 = Color3.fromRGB(60, 100, 60);
+            end;
+        end);
+        
         return false;
     end;
 end;
@@ -454,6 +505,7 @@ end);
 task.delay(1, function()
     _E.printToConsole("Console initialized successfully!", "success");
     _E.printToConsole("Press F8 to hide/show console", "system");
+    _E.printToConsole("Insert webhook URL in the text box below", "info");
     if getgenv().Webhook ~= "" then
         _E.printToConsole("Webhook loaded: " .. getgenv().Webhook, "info");
     end;
