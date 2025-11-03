@@ -1,6 +1,6 @@
 hwids = {
   "e952f4dbd291c3607e6ba032080b7f2f2b4b3fd8af0b8147e4a096c900a04cf64c2a95916b606628cc0ae69e10ace06a", -- Agusha | PC
-  ""
+  "44982f31067cf18453d887f0b94cc46a02532f60eb385bda52d1181dff752185"
 }
 
 return hwids
