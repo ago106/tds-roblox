@@ -1,8 +1,6 @@
 --[[
-Hardcore id - 5591597781
-Pizza Party id - 5591597781
-Default Lobby id - 
-Game Lobby - 3260590327
+Game - 5591597781
+Lobby - 3260590327
 ]]
 
 if game.PlaceId == 5591597781 then
