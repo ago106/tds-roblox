@@ -91,7 +91,7 @@ minimizeButton.TextScaled = true
 minimizeButton.Font = Enum.Font.GothamBold
 minimizeButton.Parent = titleBar
 
-local closeButton = Instance.new("TextButton")
+--[[local closeButton = Instance.new("TextButton")
 closeButton.Name = "CloseBtn_" .. _E.RS(9)
 closeButton.Size = UDim2.new(0.06, 0, 0.6, 0)
 closeButton.Position = UDim2.new(0.92, 0, 0.2, 0)
@@ -99,15 +99,15 @@ closeButton.BackgroundColor3 = Color3.fromRGB(200, 60, 60)
 closeButton.Text = "X"
 closeButton.TextColor3 = Color3.fromRGB(220, 220, 220)
 closeButton.TextScaled = true
-closeButton.Parent = titleBar
+closeButton.Parent = titleBar]]
 
 local UICorner3 = Instance.new("UICorner")
 UICorner3.CornerRadius = UDim.new(0, 4)
 UICorner3.Parent = minimizeButton
 
-local UICorner4 = Instance.new("UICorner")
+--[[local UICorner4 = Instance.new("UICorner")
 UICorner4.CornerRadius = UDim.new(0, 4)
-UICorner4.Parent = closeButton
+UICorner4.Parent = closeButton]]
 
 local outputFrame = Instance.new("ScrollingFrame")
 outputFrame.Name = "OutputFrame_" .. _E.RS(11)
@@ -791,7 +791,7 @@ minimizeButton.MouseButton1Click:Connect(function()
     consoleGUI.Enabled = not consoleGUI.Enabled
 end)
 
-closeButton.MouseButton1Click:Connect(function()
+--[[closeButton.MouseButton1Click:Connect(function()
     consoleGUI:Destroy()
     _G.print = nil
     _G.clearConsole = nil
@@ -799,7 +799,7 @@ closeButton.MouseButton1Click:Connect(function()
     _G.sendWebhook = nil
     _G.testWebhook = nil
     _G.sendGemsWebhook = nil
-end)
+end)]]
 
 clearButton.MouseButton1Click:Connect(function()
     _E.clearConsole()
